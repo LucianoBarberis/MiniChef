@@ -10,8 +10,8 @@ export default function App() {
   return (
     <div className="app-shell">
       <header className="app-header">
-        <h1>MiniChef</h1>
-        <p>Recetas con los ingredientes que ya tienes.</p>
+        <h1 className="app-header-title">MiniChef</h1>
+        <p className="app-header-subtitle">Recetas con los ingredientes que ya tienes.</p>
       </header>
       <main>
         <IngredientsSection controller={ingredientsController} />
