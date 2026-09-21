@@ -1,38 +1,44 @@
-/* MiniChef design tokens (DESING.md: Roboto, 8px radius/rhythm, 200-300ms motion).
-   Kitchen palette — AA-verified pairs (task 1.6 lock):
-   light surface #FFF9F2 / ink #241A12 (16.31) · muted #5C4B3B (7.96) ·
-   brand #8C2B1B (8.11) · accent #2F7D4F (4.82) · warning #7A5A00 (6.10) ·
-   success #1E6B3A (6.24) · cta #B23C00 (5.67) · badge white on brand (8.48).
+/* MiniChef design tokens — "Cocina editorial cálida".
+   Display serif (Fraunces) + grotesque body (Schibsted Grotesk), paper-cream
+   light theme with grain, deep espresso dark theme. Terracotta primary.
+   AA-verified pairs (meter, 2026-09-21):
+   light surface #FAF3E8 / ink #241A12 (15.47) · muted #5C4B3B (7.55) ·
+   brand #9C3A1A (6.28) · accent #2F7D4F (4.57) · warning #7A5A00 (5.79) ·
+   success #1E6B3A (5.92) · cta #B23C00 (5.38) · badge white on brand (6.92).
    dark surface #1C1410 / ink #F7EFE6 (15.94) · muted #C9BBA9 (9.65) ·
    brand #E0806A (6.45) · accent #7BD8A0 (10.52) · warning #E3B341 (9.33) ·
    cta #E8935A (7.57). No pure black in dark theme. */
 
 :root {
   color-scheme: light;
-  --color-surface: #fff9f2;
-  --color-card: #ffffff;
+  --color-surface: #faf3e8;
+  --color-card: #fffdf8;
   --color-ink: #241a12;
   --color-muted: #5c4b3b;
-  --color-brand: #8c2b1b;
+  --color-brand: #9c3a1a;
   --color-accent: #2f7d4f;
   --color-warning: #7a5a00;
   --color-success: #1e6b3a;
   --color-cta: #b23c00;
-  --color-border: #e3d5c3;
+  --color-border: #e5d3ba;
   --color-focus: #2f7d4f;
   --color-overlay: rgb(28 20 16 / 0.55);
   --color-on-brand: #ffffff;
 
-  --font-sans: 'Roboto', system-ui, -apple-system, sans-serif;
+  --font-sans: 'Schibsted Grotesk', system-ui, -apple-system, sans-serif;
+  --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
   --font-mono: 'JetBrains Mono', ui-monospace, monospace;
 
   --radius: 0.5rem;
+  --radius-lg: 0.9rem;
   --space: 0.5rem;
 
   --motion-fast: 200ms ease-out;
   --motion-base: 300ms ease-out;
+  --motion-reveal: 600ms cubic-bezier(0.22, 1, 0.36, 1);
 
-  --shadow-card: 0 2px 12px rgb(0 0 0 / 0.06);
+  --shadow-card: 0 1px 2px rgb(60 35 15 / 0.08), 0 8px 28px -8px rgb(60 35 15 / 0.25);
+  --shadow-lift: 0 2px 4px rgb(60 35 15 / 0.1), 0 18px 44px -12px rgb(60 35 15 / 0.35);
 }
 
 [data-theme='dark'] {
@@ -51,7 +57,8 @@
   --color-overlay: rgb(12 8 5 / 0.7);
   --color-on-brand: #1c1410;
 
-  --shadow-card: 0 2px 16px rgb(0 0 0 / 0.4);
+  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.5), 0 12px 32px -8px rgb(0 0 0 / 0.6);
+  --shadow-lift: 0 2px 6px rgb(0 0 0 / 0.55), 0 24px 56px -12px rgb(0 0 0 / 0.75);
 }
 
 *,
@@ -68,6 +75,21 @@ body {
   color: var(--color-ink);
   background: var(--color-surface);
   overflow-x: clip;
+}
+
+/* Warm grain overlay: fixed SVG turbulence, static texture, pointer-transparent. */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 400;
+  pointer-events: none;
+  opacity: 0.07;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
+}
+
+[data-theme='dark'] body::after {
+  opacity: 0.1;
 }
 
 img,
@@ -93,15 +115,61 @@ svg {
   min-width: 0;
 }
 
+/* Editorial masthead: expressive display serif, tight tracking. */
 .app-header-title {
-  font-size: 2.25rem;
-  line-height: 1.2;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 2.75rem;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
   margin: 0 0 var(--space);
 }
 
 .app-header-subtitle {
   margin: 0 0 calc(var(--space) * 3);
   color: var(--color-muted);
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 500;
+  font-size: 1.125rem;
+  line-height: 1.5;
+}
+
+/* Orchestrated page load: one staggered reveal across sections (CSS-only). */
+main > section {
+  animation: editorial-rise var(--motion-reveal) backwards;
+}
+
+main > section:nth-child(1) {
+  animation-delay: 0.05s;
+}
+
+main > section:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+main > section:nth-child(3) {
+  animation-delay: 0.25s;
+}
+
+main > section:nth-child(4) {
+  animation-delay: 0.35s;
+}
+
+@keyframes editorial-rise {
+  from {
+    opacity: 0;
+    transform: translateY(0.75rem);
+  }
+}
+
+/* Editorial section headings: display serif with brand rule. */
+main section > h2 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.5rem;
+  letter-spacing: -0.01em;
+  margin: 0 0 calc(var(--space) * 2);
 }
 
 /* Theme toggle: icon-only button, visual-only change. */
@@ -122,7 +190,7 @@ svg {
 
 .theme-toggle:hover {
   border-color: var(--color-focus);
-  transform: translateY(-1px);
+  transform: translateY(-1px) rotate(12deg);
 }
 
 /* Section icons: 20px currentColor glyphs beside headings. */
@@ -178,7 +246,7 @@ svg {
   outline-offset: 2px;
 }
 
-/* Buttons: primary fill, ghost outline. Transform-only press. */
+/* Buttons: primary fill, ghost outline. Lift + shadow surprise on hover. */
 .btn,
 .btn-primary {
   display: inline-flex;
@@ -198,8 +266,9 @@ svg {
 
 .btn:hover:not(:disabled),
 .btn-primary:hover:not(:disabled) {
-  filter: brightness(0.92);
-  box-shadow: var(--shadow-card);
+  filter: brightness(1.05);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lift);
 }
 
 .btn:active:not(:disabled),
@@ -226,21 +295,74 @@ svg {
   border: 1.5px solid var(--color-muted);
   border-radius: var(--radius);
   cursor: pointer;
-  transition: background var(--motion-fast), border-color var(--motion-fast);
+  transition: background var(--motion-fast), border-color var(--motion-fast), transform var(--motion-fast), box-shadow var(--motion-fast);
 }
 
 .btn-ghost:hover {
   background: color-mix(in srgb, var(--color-brand) 8%, transparent);
   border-color: var(--color-brand);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-card);
 }
 
-/* Cards: surface bg, 1px border, subtle shadow. Asymmetric grid. */
+/* Recipe cards: editorial ticket — oversized numeral, dashed stub divider,
+   layered shadow. Hover lifts the whole ticket. */
 .card {
+  position: relative;
+  overflow: hidden;
   background: var(--color-card);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius);
+  border-radius: var(--radius-lg);
   box-shadow: var(--shadow-card);
-  padding: calc(var(--space) * 2);
+  padding: calc(var(--space) * 3) calc(var(--space) * 3) calc(var(--space) * 2.5);
+  transition: transform var(--motion-base), box-shadow var(--motion-base);
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lift);
+}
+
+/* Ticket stub edge: punched notch on the card's leading border. */
+.card::before {
+  content: '';
+  position: absolute;
+  inset-block: calc(var(--space) * 4);
+  inset-inline-start: 0;
+  width: 3px;
+  background: repeating-linear-gradient(
+    to bottom,
+    var(--color-brand) 0,
+    var(--color-brand) 6px,
+    transparent 6px,
+    transparent 12px
+  );
+  opacity: 0.65;
+  border-start-start-radius: var(--radius-lg);
+  border-end-start-radius: var(--radius-lg);
+}
+
+/* Oversized editorial numeral: outlined display serif, decorative only. */
+.card-numeral {
+  position: absolute;
+  top: calc(var(--space) * 1);
+  inset-inline-end: calc(var(--space) * 2);
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 3rem;
+  line-height: 1;
+  color: var(--color-brand);
+  opacity: 0.22;
+  pointer-events: none;
+  user-select: none;
+}
+
+@supports ((-webkit-text-stroke: 1px black)) {
+  .card-numeral {
+    color: transparent;
+    -webkit-text-stroke: 1.5px var(--color-brand);
+    opacity: 0.6;
+  }
 }
 
 .card-grid {
@@ -248,30 +370,64 @@ svg {
   margin: 0;
   padding: 0;
   display: grid;
-  gap: calc(var(--space) * 2);
+  gap: calc(var(--space) * 2.5);
   grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
 }
 
 .card-grid > li {
   min-width: 0;
+  animation: editorial-rise var(--motion-reveal) backwards;
+}
+
+.card-grid > li:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.card-grid > li:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.card-grid > li:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+.card-grid > li:nth-child(n + 4) {
+  animation-delay: 0.4s;
 }
 
 .card-title {
   margin: 0 0 var(--space);
-  font-size: 1.125rem;
-  line-height: 1.4;
+  padding-inline-end: 3.5rem;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.375rem;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
 }
 
 .card-meta {
-  margin: 0 0 var(--space);
+  margin: 0 0 calc(var(--space) * 1.5);
+  padding-bottom: calc(var(--space) * 1.5);
   color: var(--color-muted);
   font-size: 0.875rem;
+  border-bottom: 1px dashed var(--color-border);
 }
 
 .card-missing {
-  margin: 0 0 var(--space);
+  margin: 0 0 calc(var(--space) * 1.5);
+  padding-bottom: calc(var(--space) * 1.5);
   color: var(--color-warning);
   font-size: 0.875rem;
+  border-bottom: 1px dashed var(--color-border);
+}
+
+/* Results group headings: editorial kickers. */
+main section section > h3 {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 500;
+  font-size: 1.125rem;
+  margin: calc(var(--space) * 3) 0 calc(var(--space) * 2);
 }
 
 /* Badges + alerts: AA text pairs in both themes. */
@@ -313,6 +469,12 @@ svg {
   border-radius: 9999px;
   box-shadow: var(--shadow-card);
   font-size: 0.875rem;
+  transition: transform var(--motion-fast), box-shadow var(--motion-fast);
+}
+
+.chip:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-lift);
 }
 
 .chip-remove {
@@ -327,11 +489,12 @@ svg {
   border: none;
   border-radius: 9999px;
   cursor: pointer;
-  transition: background var(--motion-fast);
+  transition: background var(--motion-fast), transform var(--motion-fast);
 }
 
 .chip-remove:hover {
   background: color-mix(in srgb, var(--color-brand) 12%, transparent);
+  transform: rotate(90deg);
 }
 
 /* Autocomplete suggestions. */
@@ -342,7 +505,7 @@ svg {
   background: var(--color-card);
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
-  box-shadow: var(--shadow-card);
+  box-shadow: var(--shadow-lift);
   overflow: hidden;
 }
 
@@ -385,9 +548,9 @@ svg {
   padding: calc(var(--space) * 4) calc(var(--space) * 2);
   text-align: center;
   color: var(--color-muted);
-  background: var(--color-card);
+  background: color-mix(in srgb, var(--color-card) 70%, transparent);
   border: 1px dashed var(--color-border);
-  border-radius: var(--radius);
+  border-radius: var(--radius-lg);
 }
 
 .empty-state svg {
@@ -415,8 +578,8 @@ svg {
   overflow-y: auto;
   background: var(--color-card);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lift);
   padding: calc(var(--space) * 3);
   animation: dialog-rise var(--motion-base);
 }
@@ -440,7 +603,7 @@ svg {
   margin: 0;
   padding: 0;
   display: grid;
-  gap: calc(var(--space) * 2);
+  gap: calc(var(--space) * 2.5);
 }
 
 .skeleton-card {
@@ -448,9 +611,9 @@ svg {
   overflow: hidden;
   border: 1px solid var(--color-border);
   background: var(--color-card);
-  border-radius: var(--radius);
+  border-radius: var(--radius-lg);
   box-shadow: var(--shadow-card);
-  padding: calc(var(--space) * 2);
+  padding: calc(var(--space) * 3) calc(var(--space) * 3) calc(var(--space) * 2.5);
   display: grid;
   gap: var(--space);
 }
@@ -504,6 +667,10 @@ svg {
   .alert {
     background: var(--color-card);
   }
+
+  .empty-state {
+    background: var(--color-card);
+  }
 }
 
 @keyframes skeleton-shimmer {
@@ -512,16 +679,39 @@ svg {
   }
 }
 
+/* Asymmetric editorial spread on wide screens: lead card spans full width. */
+@media (width >= 48rem) {
+  .card-grid > li:first-child {
+    grid-column: 1 / -1;
+  }
+
+  .card-grid > li:first-child .card-numeral {
+    font-size: 4rem;
+  }
+
+  .card-grid > li:nth-child(even) {
+    transform: translateY(0.75rem);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .shimmer,
   .dialog-overlay,
-  .dialog {
+  .dialog,
+  main > section,
+  .card-grid > li {
     animation: none;
   }
 
   .theme-toggle:hover,
+  .btn:hover:not(:disabled),
+  .btn-primary:hover:not(:disabled),
   .btn:active:not(:disabled),
-  .btn-primary:active:not(:disabled) {
+  .btn-primary:active:not(:disabled),
+  .btn-ghost:hover,
+  .card:hover,
+  .chip:hover,
+  .chip-remove:hover {
     transform: none;
   }
 }
@@ -539,11 +729,15 @@ svg {
   }
 
   .app-header-title {
-    font-size: 1.75rem;
+    font-size: 2rem;
     overflow-wrap: break-word;
   }
 
   .card-grid {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .card-numeral {
+    font-size: 2.25rem;
   }
 }
