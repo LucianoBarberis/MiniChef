@@ -1,3 +1,6 @@
+import { IngredientsSection } from './features/ingredients/IngredientsSection.tsx'
+import { KeyVault } from './features/settings/KeyVault.tsx'
+
 export default function App() {
   return (
     <div className="app-shell">
@@ -6,7 +9,8 @@ export default function App() {
         <p>Recetas con los ingredientes que ya tienes.</p>
       </header>
       <main>
-        <p>La lista de ingredientes llegará en el próximo paso.</p>
+        <IngredientsSection />
+        <KeyVault />
       </main>
     </div>
   )
