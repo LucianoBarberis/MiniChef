@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { ChefHat } from 'lucide-react'
 import { API_ERROR_MESSAGES } from '../../lib/openrouter/errors.ts'
 import type { GenerationPayload, Recipe } from '../../lib/openrouter/recipeSchema.ts'
 import { DEFAULT_FILTERS, type GenerationFilters } from '../../lib/prompt/builders.ts'
@@ -40,11 +41,14 @@ export function GenerationSection({ ingredients, apiKey, onSuccess }: Generation
 
   return (
     <section aria-labelledby="recetas-titulo">
-      <h2 id="recetas-titulo">Recetas</h2>
+      <h2 id="recetas-titulo" className="section-heading">
+        <ChefHat size={20} aria-hidden="true" /> Recetas
+      </h2>
       <form onSubmit={submit}>
         <FilterBar filters={filters} onChange={setFilters} disabled={loading} />
         <button
           type="submit"
+          className="btn-primary"
           disabled={blockedKey || blockedIngredients || loading}
         >
           {loading ? 'Generando…' : 'Generar recetas'}
@@ -52,7 +56,7 @@ export function GenerationSection({ ingredients, apiKey, onSuccess }: Generation
       </form>
       {blockedKey && <p>Guardá tu clave de OpenRouter para generar recetas.</p>}
       {!blockedKey && blockedIngredients && <p>Agregá al menos un ingrediente para generar.</p>}
-      {error !== null && <p role="alert">{API_ERROR_MESSAGES[error]}</p>}
+      {error !== null && <p role="alert" className="alert">{API_ERROR_MESSAGES[error]}</p>}
       <RecipeCards status={status} payload={payload} onSelect={setSelected} />
       <RecipeDetail recipe={selected} onClose={() => setSelected(null)} />
     </section>

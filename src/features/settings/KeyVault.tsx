@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { KeyRound } from 'lucide-react'
 import { apiKeyStore } from '../../lib/storage/apiKey.ts'
 
 /** localStorage-only vault. The key is never hardcoded or logged. */
@@ -45,18 +46,20 @@ export function KeyVault({ controller }: { controller: KeyVaultController }) {
 
   return (
     <section aria-labelledby="clave-titulo">
-      <h2 id="clave-titulo">Clave de OpenRouter</h2>
+      <h2 id="clave-titulo" className="section-heading">
+        <KeyRound size={20} aria-hidden="true" /> Clave de OpenRouter
+      </h2>
       {hasKey ? (
-        <div>
-          <p>Clave guardada: <code>{maskKey(apiKey ?? '')}</code></p>
-          <button type="button" onClick={remove}>
+        <div className="card">
+          <p className="card-meta">Clave guardada: <code>{maskKey(apiKey ?? '')}</code></p>
+          <button type="button" className="btn-ghost" onClick={remove}>
             Eliminar clave
           </button>
         </div>
       ) : (
-        <div>
+        <div className="card">
           <form onSubmit={submit}>
-            <label>
+            <label className="field">
               Tu clave
               <input
                 type="password"
@@ -66,10 +69,10 @@ export function KeyVault({ controller }: { controller: KeyVaultController }) {
                 autoComplete="off"
               />
             </label>
-            <button type="submit">Guardar clave</button>
-            {error !== null && <p role="alert">{error}</p>}
+            <button type="submit" className="btn-primary">Guardar clave</button>
+            {error !== null && <p role="alert" className="alert">{error}</p>}
           </form>
-          <p>Sin clave no se pueden generar recetas. Guardá tu clave para empezar.</p>
+          <p className="card-meta">Sin clave no se pueden generar recetas. Guardá tu clave para empezar.</p>
         </div>
       )}
     </section>

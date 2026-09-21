@@ -1,3 +1,4 @@
+import { Clock, Users } from 'lucide-react'
 import { DEFAULT_FILTERS, type GenerationFilters } from '../../lib/prompt/builders.ts'
 
 interface FilterBarProps {
@@ -16,8 +17,10 @@ export function FilterBar({ filters, onChange, disabled }: FilterBarProps) {
   return (
     <fieldset>
       <legend>Filtros</legend>
-      <label>
-        Tiempo máximo (min)
+      <label className="field">
+        <span className="section-heading">
+          <Clock size={16} aria-hidden="true" /> Tiempo máximo (min)
+        </span>
         <input
           type="number"
           min={5}
@@ -32,8 +35,10 @@ export function FilterBar({ filters, onChange, disabled }: FilterBarProps) {
           }
         />
       </label>
-      <label>
-        Porciones
+      <label className="field">
+        <span className="section-heading">
+          <Users size={16} aria-hidden="true" /> Porciones
+        </span>
         <input
           type="number"
           min={1}

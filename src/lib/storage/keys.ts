@@ -3,7 +3,7 @@
 export const STORAGE_PREFIX = 'minichef'
 export const STORAGE_VERSION = 'v1'
 
-export type StorageSlice = 'ingredients' | 'key' | 'history' | 'favorites'
+export type StorageSlice = 'ingredients' | 'key' | 'history' | 'favorites' | 'theme'
 
 export function storageKey(slice: StorageSlice): string {
   return `${STORAGE_PREFIX}:${STORAGE_VERSION}:${slice}`

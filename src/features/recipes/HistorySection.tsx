@@ -1,3 +1,4 @@
+import { Heart, History } from 'lucide-react'
 import type { StoredRecipe } from '../../lib/storage/history.ts'
 import type { HistoryController } from './useHistory.ts'
 
@@ -13,6 +14,7 @@ function FavoriteButton({
   return (
     <button
       type="button"
+      className="btn-ghost"
       aria-pressed={isFavorite}
       aria-label={isFavorite ? `Quitar ${recipe.title} de favoritas` : `Guardar ${recipe.title} en favoritas`}
       onClick={() => onToggle(recipe.id)}
@@ -33,13 +35,20 @@ export function HistorySection({ controller }: { controller: HistoryController }
 
   return (
     <section aria-labelledby="historial-titulo">
-      <h2 id="historial-titulo">Historial y favoritas</h2>
+      <h2 id="historial-titulo" className="section-heading">
+        <History size={20} aria-hidden="true" /> Historial y favoritas
+      </h2>
       <section aria-labelledby="favoritas-titulo">
-        <h3 id="favoritas-titulo">Favoritas ({favoriteRecipes.length})</h3>
+        <h3 id="favoritas-titulo" className="section-heading">
+          <Heart size={18} aria-hidden="true" /> Favoritas ({favoriteRecipes.length})
+        </h3>
         {favoriteRecipes.length === 0 ? (
-          <p>Todavía no tenés favoritas. Guardá una receta para verla acá.</p>
+          <div className="empty-state">
+            <Heart size={24} aria-hidden="true" />
+            <p>Todavía no tenés favoritas. Guardá una receta para verla acá.</p>
+          </div>
         ) : (
-          <ul aria-label="Tus favoritas">
+          <ul aria-label="Tus favoritas" className="list">
             {favoriteRecipes.map((recipe) => (
               <li key={recipe.id}>
                 {recipe.title}{' '}
@@ -52,19 +61,26 @@ export function HistorySection({ controller }: { controller: HistoryController }
       <section aria-labelledby="generaciones-titulo">
         <h3 id="generaciones-titulo">Últimas generaciones ({entries.length})</h3>
         {entries.length === 0 ? (
-          <p>Acá vas a ver tus recetas generadas.</p>
+          <div className="empty-state">
+            <History size={24} aria-hidden="true" />
+            <p>Acá vas a ver tus recetas generadas.</p>
+          </div>
         ) : (
           entries.map((entry) => (
-            <article key={entry.id}>
-              <h4>
+            <article key={entry.id} className="card">
+              <h4 className="card-title">
                 {new Date(entry.createdAt).toLocaleString('es')} ({entry.recipes.length}{' '}
                 {entry.recipes.length === 1 ? 'receta' : 'recetas'})
               </h4>
-              <ul>
+              <ul className="list">
                 {entry.recipes.map((recipe) => (
                   <li key={recipe.id}>
                     {recipe.title}
-                    {!recipe.strict && ' · flexible'}{' '}
+                    {!recipe.strict && (
+                      <>
+                        {' '}<span className="badge">flexible</span>
+                      </>
+                    )}{' '}
                     <FavoriteButton
                       recipe={recipe}
                       isFavorite={favorites.includes(recipe.id)}
