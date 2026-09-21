@@ -20,6 +20,7 @@ describe('prompt builders', () => {
     expect(system).toMatch(/hasta 3/)
     expect(system).toMatch(/SOLO con JSON válido/)
     expect(system).toMatch(/español/)
+    expect(system).toMatch(/id \(texto, único\)/)
   })
 
   it('treats filters as hard constraints with an empty-payload fallback', () => {

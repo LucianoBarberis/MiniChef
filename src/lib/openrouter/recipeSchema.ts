@@ -83,6 +83,12 @@ export function extractJsonObjectText(raw: string): string | null {
   return null
 }
 
+function coerceRecipeId(value: unknown): unknown {
+  if (typeof value === 'string') return value.trim()
+  if (typeof value === 'number' || typeof value === 'boolean') return String(value)
+  return value
+}
+
 function coercePositiveNumber(value: unknown): unknown {
   if (typeof value === 'number') return value
   if (typeof value === 'string') {
@@ -94,13 +100,14 @@ function coercePositiveNumber(value: unknown): unknown {
   return value
 }
 
-/** Normalize one recipe-like item: coerce numeric strings, derive strict. */
+/** Normalize one recipe-like item: coerce id to text, numeric strings, derive strict. */
 function normalizeRecipe(item: unknown): unknown {
   if (typeof item !== 'object' || item === null || Array.isArray(item)) return item
   const record = item as Record<string, unknown>
   const missing = Array.isArray(record['missing']) ? (record['missing'] as unknown[]) : null
   const normalized: Record<string, unknown> = {
     ...record,
+    id: coerceRecipeId(record['id']),
     timeMin: coercePositiveNumber(record['timeMin']),
     servings: coercePositiveNumber(record['servings']),
   }

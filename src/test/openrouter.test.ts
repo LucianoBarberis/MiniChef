@@ -111,6 +111,18 @@ describe('generation payload schema', () => {
       expect(result.data.strict[0]?.servings).toBe(2)
     }
   })
+
+  it('coerces a numeric id to string', () => {
+    const recipe = { ...strictRecipe('s1'), id: 1 as unknown as string }
+    const result = parseGenerationPayload({ strict: [recipe], flexible: [] })
+    expect(result.success).toBe(true)
+    if (result.success) expect(result.data.strict[0]?.id).toBe('1')
+  })
+
+  it('rejects an empty-string id', () => {
+    const recipe = { ...strictRecipe('s1'), id: '   ' }
+    expect(parseGenerationPayload({ strict: [recipe], flexible: [] }).success).toBe(false)
+  })
 })
 
 describe('requestCompletion', () => {
