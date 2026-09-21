@@ -1,10 +1,16 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { fireEvent, render, screen } from '@testing-library/react'
 import { IngredientsSection } from '../features/ingredients/IngredientsSection.tsx'
+import { useIngredients } from '../features/ingredients/useIngredients.ts'
 import { ingredientsStore } from '../lib/storage/ingredients.ts'
 import { suggestIngredients } from '../features/ingredients/staples.ts'
 
 beforeEach(() => localStorage.clear())
+
+function Harness() {
+  const controller = useIngredients()
+  return <IngredientsSection controller={controller} />
+}
 
 function addIngredient(name: string, amount: string, unit: string) {
   fireEvent.change(screen.getByPlaceholderText('Ej.: tomate'), { target: { value: name } })
@@ -15,14 +21,14 @@ function addIngredient(name: string, amount: string, unit: string) {
 
 describe('IngredientsSection', () => {
   it('adds a chip and persists it to localStorage', () => {
-    render(<IngredientsSection />)
+    render(<Harness />)
     addIngredient('tomate', '3', 'u')
     expect(screen.getByText(/tomate 3 u/)).toBeInTheDocument()
     expect(ingredientsStore.load()).toHaveLength(1)
   })
 
   it('rejects duplicates case-insensitively with a Spanish error', () => {
-    render(<IngredientsSection />)
+    render(<Harness />)
     addIngredient('Tomate', '3', 'u')
     addIngredient('tomate', '1', 'u')
     expect(screen.getByRole('alert')).toHaveTextContent(/ya está en la lista/)
@@ -30,7 +36,7 @@ describe('IngredientsSection', () => {
   })
 
   it('rejects empty names and missing quantities', () => {
-    render(<IngredientsSection />)
+    render(<Harness />)
     addIngredient('   ', '2', 'g')
     expect(screen.getByRole('alert')).toHaveTextContent(/nombre del ingrediente/)
     addIngredient('sal', '', '')
@@ -39,7 +45,7 @@ describe('IngredientsSection', () => {
   })
 
   it('accepts a suggestion, fills the name and focuses quantity', () => {
-    render(<IngredientsSection />)
+    render(<Harness />)
     fireEvent.change(screen.getByPlaceholderText('Ej.: tomate'), { target: { value: 'tom' } })
     fireEvent.click(screen.getByRole('button', { name: 'tomate' }))
     expect(screen.getByPlaceholderText('Ej.: tomate')).toHaveValue('tomate')
@@ -47,7 +53,7 @@ describe('IngredientsSection', () => {
   })
 
   it('removes a chip', () => {
-    render(<IngredientsSection />)
+    render(<Harness />)
     addIngredient('huevo', '2', 'u')
     fireEvent.click(screen.getByRole('button', { name: 'Quitar huevo' }))
     expect(screen.getByText(/Todavía no agregaste/)).toBeInTheDocument()

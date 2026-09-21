@@ -25,8 +25,11 @@ function maskKey(key: string): string {
   return key.length <= 8 ? '••••' : `${key.slice(0, 4)}••••${key.slice(-4)}`
 }
 
-export function KeyVault() {
-  const { apiKey, hasKey, save, remove } = useKeyVault()
+/** Shared controller type so App can lift state for the generation section. */
+export type KeyVaultController = ReturnType<typeof useKeyVault>
+
+export function KeyVault({ controller }: { controller: KeyVaultController }) {
+  const { apiKey, hasKey, save, remove } = controller
   const [draft, setDraft] = useState('')
   const [error, setError] = useState<string | null>(null)
 

@@ -1,13 +1,13 @@
 import { useCallback, useState } from 'react'
-import { OpenRouterError, requestCompletion } from '../openrouter/client.ts'
-import type { ApiError } from '../openrouter/errors.ts'
-import { parseGenerationPayload, type GenerationPayload } from '../openrouter/recipeSchema.ts'
+import { OpenRouterError, requestCompletion } from '../../lib/openrouter/client.ts'
+import type { ApiError } from '../../lib/openrouter/errors.ts'
+import { parseGenerationPayload, type GenerationPayload } from '../../lib/openrouter/recipeSchema.ts'
 import {
   buildGenerationMessages,
   buildRepairMessages,
   type GenerationFilters,
-} from '../prompt/builders.ts'
-import type { Ingredient } from '../storage/ingredients.ts'
+} from '../../lib/prompt/builders.ts'
+import type { Ingredient } from '../../lib/storage/ingredients.ts'
 
 export type GenerationStatus = 'idle' | 'loading' | 'success' | 'error'
 
