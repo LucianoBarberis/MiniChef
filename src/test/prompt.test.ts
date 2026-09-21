@@ -5,8 +5,8 @@ import {
   buildSystemPrompt,
   buildUserPrompt,
   DEFAULT_FILTERS,
-} from './builders.ts'
-import type { Ingredient } from '../storage/ingredients.ts'
+} from '../lib/prompt/builders.ts'
+import type { Ingredient } from '../lib/storage/ingredients.ts'
 
 const INGREDIENTS: Ingredient[] = [
   { id: 'a', name: 'tomate', amount: 3, unit: 'u' },
