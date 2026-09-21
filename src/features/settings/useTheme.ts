@@ -4,7 +4,7 @@ import { readRaw, writeRaw } from '../../lib/storage/keys.ts'
 export type Theme = 'light' | 'dark'
 
 const THEME_META: Record<Theme, string> = {
-  light: '#FFF9F2',
+  light: '#FAF3E8',
   dark: '#1C1410',
 }
 
