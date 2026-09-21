@@ -1,0 +1,56 @@
+/* MiniChef design tokens (DESING.md: Roboto, 8px radius/rhythm, 200-300ms motion). */
+
+:root {
+  --color-surface: #ffffff;
+  --color-ink: #1a1a1a;
+  --color-muted: #333333;
+  --color-brand: #a52a2a;
+  --color-accent: #87ceeb;
+  --color-warning: #ffd700;
+  --color-success: #228b22;
+  --color-cta: #cc5500;
+
+  --font-sans: 'Roboto', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  --radius: 0.5rem;
+  --space: 0.5rem;
+
+  --motion-fast: 200ms ease-out;
+  --motion-base: 300ms ease-out;
+
+  --shadow-card: 0 2px 12px rgb(0 0 0 / 0.06);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--color-ink);
+  background: var(--color-surface);
+}
+
+.app-shell {
+  max-width: 40rem;
+  margin-inline: auto;
+  padding: calc(var(--space) * 3);
+  min-height: 100dvh;
+}
+
+.app-header h1 {
+  font-size: 2.25rem;
+  line-height: 1.2;
+  margin: 0 0 var(--space);
+}
+
+.app-header p {
+  margin: 0 0 calc(var(--space) * 3);
+  color: var(--color-muted);
+}
