@@ -22,6 +22,13 @@ describe('prompt builders', () => {
     expect(system).toMatch(/español/)
   })
 
+  it('treats filters as hard constraints with an empty-payload fallback', () => {
+    const system = buildSystemPrompt()
+    expect(system).toMatch(/restricciones duras/)
+    expect(system).toContain('{"strict": [], "flexible": []}')
+    expect(system).not.toMatch(/indícalo/)
+  })
+
   it('lists quantities as name/amount/unit lines and always includes filters', () => {
     const user = buildUserPrompt(INGREDIENTS, { maxTimeMin: 30, servings: 2 })
     expect(user).toContain('tomate 3 u')
