@@ -1,9 +1,27 @@
 import { useRef, useState } from 'react'
-import type { Unit } from '../../lib/storage/ingredients.ts'
+import { UNITS, UNIT_LABELS, type Unit } from '../../lib/storage/ingredients.ts'
 import { INGREDIENT_ERROR_MESSAGES, useIngredients, type IngredientDraft } from './useIngredients.ts'
 import { suggestIngredients } from './staples.ts'
 
-const UNITS: Unit[] = ['u', 'g', 'kg', 'ml', 'l', 'cda', 'cdta', 'taza']
+/** Lucide `x` icon (inline SVG: no extra dependency for a single glyph). */
+function XIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M18 6 6 18" />
+      <path d="m6 6 12 12" />
+    </svg>
+  )
+}
 
 /** Shared controller type so App can lift state for the generation section. */
 export type IngredientsController = ReturnType<typeof useIngredients>
@@ -82,7 +100,7 @@ export function IngredientsSection({ controller }: { controller: IngredientsCont
             <option value="">Elegí…</option>
             {UNITS.map((u) => (
               <option key={u} value={u}>
-                {u}
+                {UNIT_LABELS[u]} ({u})
               </option>
             ))}
           </select>
@@ -96,9 +114,9 @@ export function IngredientsSection({ controller }: { controller: IngredientsCont
         <ul aria-label="Tus ingredientes">
           {ingredients.map((item) => (
             <li key={item.id}>
-              {item.name} {item.amount} {item.unit}{' '}
+              {item.name} {item.amount} {UNIT_LABELS[item.unit]}{' '}
               <button type="button" aria-label={`Quitar ${item.name}`} onClick={() => remove(item.id)}>
-                ×
+                <XIcon />
               </button>
             </li>
           ))}

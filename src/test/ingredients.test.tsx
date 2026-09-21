@@ -23,7 +23,7 @@ describe('IngredientsSection', () => {
   it('adds a chip and persists it to localStorage', () => {
     render(<Harness />)
     addIngredient('tomate', '3', 'u')
-    expect(screen.getByText(/tomate 3 u/)).toBeInTheDocument()
+    expect(screen.getByText(/tomate 3 unidades/)).toBeInTheDocument()
     expect(ingredientsStore.load()).toHaveLength(1)
   })
 
