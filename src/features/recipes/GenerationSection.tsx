@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { API_ERROR_MESSAGES } from '../../lib/openrouter/errors.ts'
-import type { Recipe } from '../../lib/openrouter/recipeSchema.ts'
+import type { GenerationPayload, Recipe } from '../../lib/openrouter/recipeSchema.ts'
 import { DEFAULT_FILTERS, type GenerationFilters } from '../../lib/prompt/builders.ts'
 import type { Ingredient } from '../../lib/storage/ingredients.ts'
 import { FilterBar } from './FilterBar.tsx'
@@ -11,13 +11,22 @@ import { useGeneration } from './useGeneration.ts'
 interface GenerationSectionProps {
   ingredients: Ingredient[]
   apiKey: string | null
+  onSuccess: (payload: GenerationPayload) => void
 }
 
 /** Filters → fixed-model generation → hybrid cards → detail modal. */
-export function GenerationSection({ ingredients, apiKey }: GenerationSectionProps) {
+export function GenerationSection({ ingredients, apiKey, onSuccess }: GenerationSectionProps) {
   const [filters, setFilters] = useState<GenerationFilters>(DEFAULT_FILTERS)
   const [selected, setSelected] = useState<Recipe | null>(null)
   const { status, payload, error, generate } = useGeneration()
+  const recorded = useRef<GenerationPayload | null>(null)
+
+  useEffect(() => {
+    if (status === 'success' && payload !== null && recorded.current !== payload) {
+      recorded.current = payload
+      onSuccess(payload)
+    }
+  }, [status, payload, onSuccess])
 
   const loading = status === 'loading'
   const blockedKey = apiKey === null
