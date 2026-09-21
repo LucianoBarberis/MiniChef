@@ -1,14 +1,27 @@
-/* MiniChef design tokens (DESING.md: Roboto, 8px radius/rhythm, 200-300ms motion). */
+/* MiniChef design tokens (DESING.md: Roboto, 8px radius/rhythm, 200-300ms motion).
+   Kitchen palette — AA-verified pairs (task 1.6 lock):
+   light surface #FFF9F2 / ink #241A12 (16.31) · muted #5C4B3B (7.96) ·
+   brand #8C2B1B (8.11) · accent #2F7D4F (4.82) · warning #7A5A00 (6.10) ·
+   success #1E6B3A (6.24) · cta #B23C00 (5.67) · badge white on brand (8.48).
+   dark surface #1C1410 / ink #F7EFE6 (15.94) · muted #C9BBA9 (9.65) ·
+   brand #E0806A (6.45) · accent #7BD8A0 (10.52) · warning #E3B341 (9.33) ·
+   cta #E8935A (7.57). No pure black in dark theme. */
 
 :root {
-  --color-surface: #ffffff;
-  --color-ink: #1a1a1a;
-  --color-muted: #333333;
-  --color-brand: #a52a2a;
-  --color-accent: #87ceeb;
-  --color-warning: #ffd700;
-  --color-success: #228b22;
-  --color-cta: #cc5500;
+  color-scheme: light;
+  --color-surface: #fff9f2;
+  --color-card: #ffffff;
+  --color-ink: #241a12;
+  --color-muted: #5c4b3b;
+  --color-brand: #8c2b1b;
+  --color-accent: #2f7d4f;
+  --color-warning: #7a5a00;
+  --color-success: #1e6b3a;
+  --color-cta: #b23c00;
+  --color-border: #e3d5c3;
+  --color-focus: #2f7d4f;
+  --color-overlay: rgb(28 20 16 / 0.55);
+  --color-on-brand: #ffffff;
 
   --font-sans: 'Roboto', system-ui, -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, monospace;
@@ -20,6 +33,25 @@
   --motion-base: 300ms ease-out;
 
   --shadow-card: 0 2px 12px rgb(0 0 0 / 0.06);
+}
+
+[data-theme='dark'] {
+  color-scheme: dark;
+  --color-surface: #1c1410;
+  --color-card: #2a1f18;
+  --color-ink: #f7efe6;
+  --color-muted: #c9bba9;
+  --color-brand: #e0806a;
+  --color-accent: #7bd8a0;
+  --color-warning: #e3b341;
+  --color-success: #7bd8a0;
+  --color-cta: #e8935a;
+  --color-border: #4a3a2c;
+  --color-focus: #7bd8a0;
+  --color-overlay: rgb(12 8 5 / 0.7);
+  --color-on-brand: #1c1410;
+
+  --shadow-card: 0 2px 16px rgb(0 0 0 / 0.4);
 }
 
 *,
@@ -50,6 +82,17 @@ svg {
   min-height: 100dvh;
 }
 
+.app-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: calc(var(--space) * 2);
+}
+
+.app-header-text {
+  min-width: 0;
+}
+
 .app-header-title {
   font-size: 2.25rem;
   line-height: 1.2;
@@ -59,6 +102,336 @@ svg {
 .app-header-subtitle {
   margin: 0 0 calc(var(--space) * 3);
   color: var(--color-muted);
+}
+
+/* Theme toggle: icon-only button, visual-only change. */
+.theme-toggle {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 9999px;
+  border: 1px solid var(--color-border);
+  background: var(--color-card);
+  color: var(--color-ink);
+  cursor: pointer;
+  transition: background var(--motion-fast), border-color var(--motion-fast), transform var(--motion-fast);
+}
+
+.theme-toggle:hover {
+  border-color: var(--color-focus);
+  transform: translateY(-1px);
+}
+
+/* Section icons: 20px currentColor glyphs beside headings. */
+.section-heading {
+  display: flex;
+  align-items: center;
+  gap: var(--space);
+}
+
+.section-heading svg {
+  flex-shrink: 0;
+  color: var(--color-brand);
+}
+
+/* Forms: label-above-input, 1px border, 2px accent focus ring offset 2px. */
+.field {
+  display: grid;
+  gap: calc(var(--space) * 0.5);
+  margin-block-end: calc(var(--space) * 2);
+  color: var(--color-ink);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.input,
+.field input,
+.field select {
+  width: 100%;
+  padding: calc(var(--space) * 1.5);
+  font: inherit;
+  font-weight: 400;
+  color: var(--color-ink);
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+.input::placeholder,
+.field input::placeholder {
+  color: var(--color-muted);
+}
+
+.input:focus-visible,
+.field input:focus-visible,
+.field select:focus-visible,
+.btn:focus-visible,
+.btn-primary:focus-visible,
+.btn-ghost:focus-visible,
+.chip-remove:focus-visible,
+.suggestions button:focus-visible,
+.theme-toggle:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+/* Buttons: primary fill, ghost outline. Transform-only press. */
+.btn,
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space);
+  padding: calc(var(--space) * 1.5) calc(var(--space) * 3);
+  font: inherit;
+  font-weight: 600;
+  color: var(--color-on-brand);
+  background: var(--color-brand);
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: filter var(--motion-fast), transform var(--motion-fast), box-shadow var(--motion-fast);
+}
+
+.btn:hover:not(:disabled),
+.btn-primary:hover:not(:disabled) {
+  filter: brightness(0.92);
+  box-shadow: var(--shadow-card);
+}
+
+.btn:active:not(:disabled),
+.btn-primary:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.btn:disabled,
+.btn-primary:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space);
+  padding: calc(var(--space) * 1.5) calc(var(--space) * 3);
+  font: inherit;
+  font-weight: 600;
+  color: var(--color-brand);
+  background: transparent;
+  border: 1.5px solid var(--color-muted);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background var(--motion-fast), border-color var(--motion-fast);
+}
+
+.btn-ghost:hover {
+  background: color-mix(in srgb, var(--color-brand) 8%, transparent);
+  border-color: var(--color-brand);
+}
+
+/* Cards: surface bg, 1px border, subtle shadow. Asymmetric grid. */
+.card {
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+  padding: calc(var(--space) * 2);
+}
+
+.card-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: calc(var(--space) * 2);
+  grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+}
+
+.card-grid > li {
+  min-width: 0;
+}
+
+.card-title {
+  margin: 0 0 var(--space);
+  font-size: 1.125rem;
+  line-height: 1.4;
+}
+
+.card-meta {
+  margin: 0 0 var(--space);
+  color: var(--color-muted);
+  font-size: 0.875rem;
+}
+
+.card-missing {
+  margin: 0 0 var(--space);
+  color: var(--color-warning);
+  font-size: 0.875rem;
+}
+
+/* Badges + alerts: AA text pairs in both themes. */
+.badge {
+  display: inline-block;
+  padding: calc(var(--space) * 0.5) var(--space);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-on-brand);
+  background: var(--color-brand);
+  border-radius: var(--radius);
+}
+
+.alert {
+  padding: calc(var(--space) * 1.5) calc(var(--space) * 2);
+  color: var(--color-warning);
+  background: color-mix(in srgb, var(--color-warning) 12%, var(--color-surface));
+  border: 1px solid var(--color-warning);
+  border-radius: var(--radius);
+}
+
+/* Chips: ingredient pills with lucide remove button. */
+.chip-list {
+  list-style: none;
+  margin: calc(var(--space) * 2) 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space);
+  padding: var(--space) calc(var(--space) * 1.5);
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: 9999px;
+  box-shadow: var(--shadow-card);
+  font-size: 0.875rem;
+}
+
+.chip-remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
+  color: var(--color-brand);
+  background: transparent;
+  border: none;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: background var(--motion-fast);
+}
+
+.chip-remove:hover {
+  background: color-mix(in srgb, var(--color-brand) 12%, transparent);
+}
+
+/* Autocomplete suggestions. */
+.suggestions {
+  list-style: none;
+  margin: 0 0 calc(var(--space) * 2);
+  padding: 0;
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+
+.suggestions button {
+  display: block;
+  width: 100%;
+  padding: calc(var(--space) * 1.5) calc(var(--space) * 2);
+  font: inherit;
+  text-align: start;
+  color: var(--color-ink);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background var(--motion-fast);
+}
+
+.suggestions button:hover {
+  background: color-mix(in srgb, var(--color-accent) 12%, transparent);
+}
+
+/* History / vault lists. */
+.list {
+  list-style: none;
+  margin: 0 0 calc(var(--space) * 2);
+  padding: 0;
+  display: grid;
+  gap: var(--space);
+}
+
+.list > li {
+  min-width: 0;
+  overflow-wrap: break-word;
+}
+
+/* Empty states: icon composition, themed text, unchanged copy. */
+.empty-state {
+  display: grid;
+  justify-items: center;
+  gap: var(--space);
+  padding: calc(var(--space) * 4) calc(var(--space) * 2);
+  text-align: center;
+  color: var(--color-muted);
+  background: var(--color-card);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius);
+}
+
+.empty-state svg {
+  color: var(--color-muted);
+}
+
+/* Dialog: overlay z-200, modal z-300 per DESING.md contract. */
+.dialog-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: calc(var(--space) * 3);
+  background: var(--color-overlay);
+  animation: dialog-fade var(--motion-base);
+}
+
+.dialog {
+  position: relative;
+  z-index: 300;
+  width: min(32rem, 100%);
+  max-height: min(40rem, calc(100dvh - calc(var(--space) * 6)));
+  overflow-y: auto;
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+  padding: calc(var(--space) * 3);
+  animation: dialog-rise var(--motion-base);
+}
+
+@keyframes dialog-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes dialog-rise {
+  from {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
 }
 
 /* Shimmer skeletons (DESING.md): match card dimensions, transform-only motion. */
@@ -73,7 +446,8 @@ svg {
 .skeleton-card {
   position: relative;
   overflow: hidden;
-  border: 1px solid var(--color-muted);
+  border: 1px solid var(--color-border);
+  background: var(--color-card);
   border-radius: var(--radius);
   box-shadow: var(--shadow-card);
   padding: calc(var(--space) * 2);
@@ -84,7 +458,7 @@ svg {
 .skeleton {
   display: block;
   border-radius: var(--radius);
-  background: color-mix(in srgb, var(--color-muted) 12%, var(--color-surface));
+  background: var(--color-border);
   min-height: 1rem;
 }
 
@@ -108,11 +482,28 @@ svg {
   background: linear-gradient(
     100deg,
     transparent 20%,
-    rgb(255 255 255 / 0.65) 50%,
+    color-mix(in srgb, var(--color-ink) 12%, transparent) 50%,
     transparent 80%
   );
   transform: translateX(-100%);
   animation: skeleton-shimmer 1.4s ease-out infinite;
+}
+
+/* Solid fallback when color-mix is unavailable. */
+@supports not (background: color-mix(in srgb, red 50%, white)) {
+  .shimmer {
+    background: linear-gradient(100deg, transparent 20%, rgb(128 128 128 / 0.25) 50%, transparent 80%);
+  }
+
+  .btn-ghost:hover,
+  .chip-remove:hover,
+  .suggestions button:hover {
+    background: var(--color-border);
+  }
+
+  .alert {
+    background: var(--color-card);
+  }
 }
 
 @keyframes skeleton-shimmer {
@@ -122,7 +513,37 @@ svg {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .shimmer {
+  .shimmer,
+  .dialog-overlay,
+  .dialog {
     animation: none;
+  }
+
+  .theme-toggle:hover,
+  .btn:active:not(:disabled),
+  .btn-primary:active:not(:disabled) {
+    transform: none;
+  }
+}
+
+/* Responsive: single-column below 768px, 360px guards. */
+@media (width < 48rem) {
+  .card-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (width <= 22.5rem) {
+  .app-shell {
+    padding: calc(var(--space) * 2);
+  }
+
+  .app-header-title {
+    font-size: 1.75rem;
+    overflow-wrap: break-word;
+  }
+
+  .card-grid {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
