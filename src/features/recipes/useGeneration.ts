@@ -17,15 +17,9 @@ export interface GenerationInput {
   filters: GenerationFilters
 }
 
-/** JSON.parse + zod caps. Null means "retry once or fail with bad-output". */
+/** Hardened parse of model text. Null means "retry once or fail with bad-output". */
 function tryParsePayload(raw: string): GenerationPayload | null {
-  let json: unknown
-  try {
-    json = JSON.parse(raw)
-  } catch {
-    return null
-  }
-  const result = parseGenerationPayload(json)
+  const result = parseGenerationPayload(raw)
   return result.success ? result.data : null
 }
 
