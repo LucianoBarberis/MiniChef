@@ -30,10 +30,15 @@ function RecipeCard({ recipe, onSelect }: { recipe: Recipe; onSelect: (recipe: R
 
 function SkeletonList() {
   return (
-    <ul aria-label="Generando recetas" aria-busy="true">
+    <ul className="recipe-skeletons" aria-label="Generando recetas" aria-busy="true">
       {[0, 1, 2].map((key) => (
         <li key={key} aria-hidden="true">
-          Generando…
+          <article className="skeleton-card" aria-hidden="true">
+            <span className="skeleton skeleton-title" />
+            <span className="skeleton skeleton-meta" />
+            <span className="skeleton skeleton-action" />
+            <span className="shimmer" />
+          </article>
         </li>
       ))}
     </ul>

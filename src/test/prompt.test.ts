@@ -5,8 +5,8 @@ import {
   buildSystemPrompt,
   buildUserPrompt,
   DEFAULT_FILTERS,
-} from './builders.ts'
-import type { Ingredient } from '../storage/ingredients.ts'
+} from '../lib/prompt/builders.ts'
+import type { Ingredient } from '../lib/storage/ingredients.ts'
 
 const INGREDIENTS: Ingredient[] = [
   { id: 'a', name: 'tomate', amount: 3, unit: 'u' },
@@ -20,6 +20,13 @@ describe('prompt builders', () => {
     expect(system).toMatch(/hasta 3/)
     expect(system).toMatch(/SOLO con JSON válido/)
     expect(system).toMatch(/español/)
+  })
+
+  it('treats filters as hard constraints with an empty-payload fallback', () => {
+    const system = buildSystemPrompt()
+    expect(system).toMatch(/restricciones duras/)
+    expect(system).toContain('{"strict": [], "flexible": []}')
+    expect(system).not.toMatch(/indícalo/)
   })
 
   it('lists quantities as name/amount/unit lines and always includes filters', () => {
