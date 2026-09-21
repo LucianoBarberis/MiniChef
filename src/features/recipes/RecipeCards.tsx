@@ -10,17 +10,17 @@ interface RecipeCardsProps {
 function RecipeCard({ recipe, onSelect }: { recipe: Recipe; onSelect: (recipe: Recipe) => void }) {
   return (
     <li>
-      <article>
-        <h4>{recipe.title}</h4>
-        <p>
+      <article className="card">
+        <h4 className="card-title">{recipe.title}</h4>
+        <p className="card-meta">
           {recipe.timeMin} min · {recipe.servings} porciones
         </p>
         {!recipe.strict && (
-          <p>
+          <p className="card-missing">
             Te faltan: {recipe.missing.join(', ')}
           </p>
         )}
-        <button type="button" onClick={() => onSelect(recipe)}>
+        <button type="button" className="btn-ghost" onClick={() => onSelect(recipe)}>
           Ver detalle
         </button>
       </article>
@@ -49,19 +49,29 @@ function SkeletonList() {
 export function RecipeCards({ status, payload, onSelect }: RecipeCardsProps) {
   if (status === 'loading') return <SkeletonList />
   if (status === 'idle' || payload === null) {
-    return <p>Agregá ingredientes y generá recetas para verlas acá.</p>
+    return (
+      <div className="empty-state">
+        <p>Agregá ingredientes y generá recetas para verlas acá.</p>
+      </div>
+    )
   }
   if (payload.strict.length === 0 && payload.flexible.length === 0) {
-    return <p>No salieron recetas. Probá con otros ingredientes o filtros.</p>
+    return (
+      <div className="empty-state">
+        <p>No salieron recetas. Probá con otros ingredientes o filtros.</p>
+      </div>
+    )
   }
   return (
     <div>
       <section aria-labelledby="estrictas-titulo">
         <h3 id="estrictas-titulo">Con lo que tenés ({payload.strict.length})</h3>
         {payload.strict.length === 0 ? (
-          <p>Ninguna receta usa solo lo que tenés.</p>
+          <div className="empty-state">
+            <p>Ninguna receta usa solo lo que tenés.</p>
+          </div>
         ) : (
-          <ul>
+          <ul className="card-grid">
             {payload.strict.map((recipe) => (
               <RecipeCard key={recipe.id} recipe={recipe} onSelect={onSelect} />
             ))}
@@ -71,9 +81,11 @@ export function RecipeCards({ status, payload, onSelect }: RecipeCardsProps) {
       <section aria-labelledby="flexibles-titulo">
         <h3 id="flexibles-titulo">Con 1 o 2 faltantes ({payload.flexible.length})</h3>
         {payload.flexible.length === 0 ? (
-          <p>Ninguna receta flexible esta vez.</p>
+          <div className="empty-state">
+            <p>Ninguna receta flexible esta vez.</p>
+          </div>
         ) : (
-          <ul>
+          <ul className="card-grid">
             {payload.flexible.map((recipe) => (
               <RecipeCard key={recipe.id} recipe={recipe} onSelect={onSelect} />
             ))}

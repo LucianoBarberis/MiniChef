@@ -21,15 +21,16 @@ export function RecipeDetail({ recipe, onClose }: RecipeDetailProps) {
   return (
     <div
       role="presentation"
+      className="dialog-overlay"
       onClick={onClose}
     >
-      <div role="dialog" aria-modal="true" aria-label={recipe.title} onClick={(event) => event.stopPropagation()}>
-        <h3>{recipe.title}</h3>
-        <p>
+      <div role="dialog" aria-modal="true" aria-label={recipe.title} className="dialog" onClick={(event) => event.stopPropagation()}>
+        <h3 className="card-title">{recipe.title}</h3>
+        <p className="card-meta">
           {recipe.timeMin} min · {recipe.servings} porciones
         </p>
         <h4>Ingredientes</h4>
-        <ul>
+        <ul className="list">
           {recipe.owned.map((item) => (
             <li key={item}>{item}</li>
           ))}
@@ -38,12 +39,12 @@ export function RecipeDetail({ recipe, onClose }: RecipeDetailProps) {
           ))}
         </ul>
         <h4>Pasos</h4>
-        <ol>
+        <ol className="list">
           {recipe.steps.map((step, index) => (
             <li key={index}>{step}</li>
           ))}
         </ol>
-        <button type="button" onClick={onClose}>
+        <button type="button" className="btn-ghost" onClick={onClose}>
           Cerrar
         </button>
       </div>
