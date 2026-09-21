@@ -7,10 +7,13 @@ interface RecipeCardsProps {
   onSelect: (recipe: Recipe) => void
 }
 
-function RecipeCard({ recipe, onSelect }: { recipe: Recipe; onSelect: (recipe: Recipe) => void }) {
+function RecipeCard({ recipe, index, onSelect }: { recipe: Recipe; index: number; onSelect: (recipe: Recipe) => void }) {
   return (
     <li>
       <article className="card">
+        <span className="card-numeral" aria-hidden="true">
+          {String(index + 1).padStart(2, '0')}
+        </span>
         <h4 className="card-title">{recipe.title}</h4>
         <p className="card-meta">
           {recipe.timeMin} min · {recipe.servings} porciones
@@ -72,8 +75,8 @@ export function RecipeCards({ status, payload, onSelect }: RecipeCardsProps) {
           </div>
         ) : (
           <ul className="card-grid">
-            {payload.strict.map((recipe) => (
-              <RecipeCard key={recipe.id} recipe={recipe} onSelect={onSelect} />
+            {payload.strict.map((recipe, index) => (
+              <RecipeCard key={recipe.id} recipe={recipe} index={index} onSelect={onSelect} />
             ))}
           </ul>
         )}
@@ -86,8 +89,8 @@ export function RecipeCards({ status, payload, onSelect }: RecipeCardsProps) {
           </div>
         ) : (
           <ul className="card-grid">
-            {payload.flexible.map((recipe) => (
-              <RecipeCard key={recipe.id} recipe={recipe} onSelect={onSelect} />
+            {payload.flexible.map((recipe, index) => (
+              <RecipeCard key={recipe.id} recipe={recipe} index={index} onSelect={onSelect} />
             ))}
           </ul>
         )}
