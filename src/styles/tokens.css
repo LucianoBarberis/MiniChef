@@ -54,3 +54,69 @@ body {
   margin: 0 0 calc(var(--space) * 3);
   color: var(--color-muted);
 }
+
+/* Shimmer skeletons (DESING.md): match card dimensions, transform-only motion. */
+.recipe-skeletons {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: calc(var(--space) * 2);
+}
+
+.skeleton-card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--color-muted);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+  padding: calc(var(--space) * 2);
+  display: grid;
+  gap: var(--space);
+}
+
+.skeleton {
+  display: block;
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--color-muted) 12%, var(--color-surface));
+  min-height: 1rem;
+}
+
+.skeleton-title {
+  min-height: 1.5rem;
+  width: 70%;
+}
+
+.skeleton-meta {
+  width: 45%;
+}
+
+.skeleton-action {
+  min-height: 2.25rem;
+  width: 8rem;
+}
+
+.shimmer {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    transparent 20%,
+    rgb(255 255 255 / 0.65) 50%,
+    transparent 80%
+  );
+  transform: translateX(-100%);
+  animation: skeleton-shimmer 1.4s ease-out infinite;
+}
+
+@keyframes skeleton-shimmer {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shimmer {
+    animation: none;
+  }
+}
