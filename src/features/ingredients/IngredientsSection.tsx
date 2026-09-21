@@ -5,9 +5,12 @@ import { suggestIngredients } from './staples.ts'
 
 const UNITS: Unit[] = ['u', 'g', 'kg', 'ml', 'l', 'cda', 'cdta', 'taza']
 
+/** Shared controller type so App can lift state for the generation section. */
+export type IngredientsController = ReturnType<typeof useIngredients>
+
 /** Quantity form + autocomplete + chips. One unified list, quantities required. */
-export function IngredientsSection() {
-  const { ingredients, error, add, remove } = useIngredients()
+export function IngredientsSection({ controller }: { controller: IngredientsController }) {
+  const { ingredients, error, add, remove } = controller
   const [name, setName] = useState('')
   const [amount, setAmount] = useState('')
   const [unit, setUnit] = useState<Unit | ''>('')

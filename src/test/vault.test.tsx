@@ -1,13 +1,18 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { fireEvent, render, screen } from '@testing-library/react'
-import { KeyVault } from '../features/settings/KeyVault.tsx'
+import { KeyVault, useKeyVault } from '../features/settings/KeyVault.tsx'
 import { apiKeyStore } from '../lib/storage/apiKey.ts'
 
 beforeEach(() => localStorage.clear())
 
+function Harness() {
+  const controller = useKeyVault()
+  return <KeyVault controller={controller} />
+}
+
 describe('KeyVault', () => {
   it('saves the key and shows it masked', () => {
-    render(<KeyVault />)
+    render(<Harness />)
     fireEvent.change(screen.getByPlaceholderText('sk-or-…'), { target: { value: 'sk-or-12345678' } })
     fireEvent.click(screen.getByRole('button', { name: 'Guardar clave' }))
     expect(apiKeyStore.load()).toBe('sk-or-12345678')
@@ -16,7 +21,7 @@ describe('KeyVault', () => {
   })
 
   it('rejects an empty key with a Spanish error', () => {
-    render(<KeyVault />)
+    render(<Harness />)
     fireEvent.click(screen.getByRole('button', { name: 'Guardar clave' }))
     expect(screen.getByRole('alert')).toHaveTextContent(/Pegá tu clave/)
     expect(apiKeyStore.load()).toBeNull()
@@ -24,7 +29,7 @@ describe('KeyVault', () => {
 
   it('deletes the key and blocks generation with a Spanish prompt', () => {
     apiKeyStore.save('sk-or-abc')
-    render(<KeyVault />)
+    render(<Harness />)
     fireEvent.click(screen.getByRole('button', { name: 'Eliminar clave' }))
     expect(apiKeyStore.load()).toBeNull()
     expect(screen.getByText(/Sin clave no se pueden generar recetas/)).toBeInTheDocument()
