@@ -39,6 +39,7 @@ function Harness() {
       </button>
       {error !== null && <p role="alert">{API_ERROR_MESSAGES[error]}</p>}
       {payload?.strict.map((recipe) => <h4 key={recipe.id}>{recipe.title}</h4>)}
+      {payload?.flexible.map((recipe) => <h4 key={recipe.id}>{recipe.title}</h4>)}
     </div>
   )
 }
@@ -96,6 +97,39 @@ describe('useGeneration with mocked fetch', () => {
 
   it('renders strict results on a first-try success', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue(successResponse(VALID_PAYLOAD)))
+    render(<Harness />)
+    clickGenerate()
+    expect(await screen.findByText('Tortilla simple')).toBeInTheDocument()
+  })
+
+  it('parses fenced JSON on the first try without a repair retry', async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValue(successResponse('```json\n' + VALID_PAYLOAD + '\n```'))
+    vi.stubGlobal('fetch', fetchMock)
+    render(<Harness />)
+    clickGenerate()
+    expect(await screen.findByText('Tortilla simple')).toBeInTheDocument()
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+  })
+
+  it('coerces numeric strings and re-buckets a mismatched strict flag', async () => {
+    const mismatched = JSON.stringify({
+      strict: [
+        {
+          id: 's1',
+          title: 'Tortilla simple',
+          timeMin: '20',
+          servings: '2',
+          owned: ['huevo'],
+          missing: ['cebolla'],
+          steps: ['Batir.', 'Servir.'],
+          strict: true,
+        },
+      ],
+      flexible: [],
+    })
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(successResponse(mismatched)))
     render(<Harness />)
     clickGenerate()
     expect(await screen.findByText('Tortilla simple')).toBeInTheDocument()

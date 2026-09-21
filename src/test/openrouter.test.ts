@@ -46,37 +46,70 @@ describe('generation payload schema', () => {
     expect(result.success).toBe(true)
   })
 
-  it('rejects more than 5 strict recipes', () => {
+  it('truncates more than 5 strict recipes to 5', () => {
     const result = parseGenerationPayload({
       strict: Array.from({ length: 6 }, (_, i) => strictRecipe(`s${i}`)),
       flexible: [],
     })
-    expect(result.success).toBe(false)
+    expect(result.success).toBe(true)
+    if (result.success) expect(result.data.strict).toHaveLength(5)
   })
 
-  it('rejects more than 3 flexible recipes', () => {
+  it('truncates more than 3 flexible recipes to 3', () => {
     const result = parseGenerationPayload({
       strict: [],
       flexible: Array.from({ length: 4 }, (_, i) => flexibleRecipe(`f${i}`, ['sal'])),
     })
-    expect(result.success).toBe(false)
+    expect(result.success).toBe(true)
+    if (result.success) expect(result.data.flexible).toHaveLength(3)
   })
 
-  it('rejects strict recipes with missing ingredients', () => {
+  it('re-buckets a strict-flagged recipe with missing ingredients into flexible', () => {
     const result = parseGenerationPayload({
       strict: [strictRecipe('s1', ['cebolla'])],
       flexible: [],
     })
-    expect(result.success).toBe(false)
+    expect(result.success).toBe(true)
+    if (result.success) {
+      expect(result.data.strict).toHaveLength(0)
+      expect(result.data.flexible).toHaveLength(1)
+      expect(result.data.flexible[0]?.strict).toBe(false)
+    }
   })
 
-  it('rejects flexible recipes with zero or 3+ missing ingredients', () => {
+  it('re-buckets a flexible-flagged recipe with zero missing into strict', () => {
     expect(
       parseGenerationPayload({ strict: [], flexible: [flexibleRecipe('f1', [])] }).success,
-    ).toBe(false)
+    ).toBe(true)
     expect(
-      parseGenerationPayload({ strict: [], flexible: [flexibleRecipe('f1', ['a', 'b', 'c'])] }).success,
+      parseGenerationPayload({ strict: [], flexible: [flexibleRecipe('f1', ['a', 'b', 'c'])] })
+        .success,
     ).toBe(false)
+  })
+
+  it('parses fenced JSON model output', () => {
+    const raw = '```json\n' + JSON.stringify({ strict: [strictRecipe('s1')], flexible: [] }) + '\n```'
+    const result = parseGenerationPayload(raw)
+    expect(result.success).toBe(true)
+  })
+
+  it('parses prose-wrapped JSON model output', () => {
+    const raw =
+      'Here are your recipes: ' +
+      JSON.stringify({ strict: [strictRecipe('s1')], flexible: [] }) +
+      ' Enjoy!'
+    const result = parseGenerationPayload(raw)
+    expect(result.success).toBe(true)
+  })
+
+  it('coerces numeric strings for timeMin and servings', () => {
+    const recipe = { ...strictRecipe('s1'), timeMin: '20', servings: '2' }
+    const result = parseGenerationPayload({ strict: [recipe], flexible: [] })
+    expect(result.success).toBe(true)
+    if (result.success) {
+      expect(result.data.strict[0]?.timeMin).toBe(20)
+      expect(result.data.strict[0]?.servings).toBe(2)
+    }
   })
 })
 
